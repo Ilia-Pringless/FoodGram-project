@@ -41,7 +41,7 @@ class CustomUsersViewSet(UserViewSet):
         kwargs.setdefault('context', self.get_serializer_context())
         return SubscriptionSerializer(*args, **kwargs)
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=('get',))
     def subscriptions(self, request):
         """Просмотр подписок"""
         queryset = User.objects.filter(following__user=request.user)
@@ -75,7 +75,7 @@ class CustomUsersViewSet(UserViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['POST', 'DELETE'],
+    @action(detail=True, methods=('post', 'delete',),
             permission_classes=[permissions.IsAuthenticated])
     def subscribe(self, request, id=None):
         try:
