@@ -2,8 +2,8 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
+from api.nested import ShortRecipeSerializer
 from .models import User
-from .nested import ShortRecipeSerializer
 
 
 class UserViewSerializer(UserSerializer):

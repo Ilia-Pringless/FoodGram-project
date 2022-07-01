@@ -8,14 +8,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv('DJANGO_KEY', default='qwerty')
 
-DEBUG = True
+DEBUG = False
 
-# ALLOWED_HOSTS = os.getenv('HOSTS', default='localhost')
+ALLOWED_HOSTS = os.getenv('HOSTS', default='localhost').split()
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1'
-]
 
 INSTALLED_APPS = [
     'recipes.apps.RecipesConfig',
@@ -87,7 +83,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 

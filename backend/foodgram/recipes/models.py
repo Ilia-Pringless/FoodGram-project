@@ -1,5 +1,6 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
 from users.models import User
 
 
@@ -32,7 +33,7 @@ class Tag(models.Model):
         max_length=7,
         unique=True
     )
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(max_length=200, unique=True)
 
     class Meta:
         verbose_name = 'Тег'
@@ -91,20 +92,20 @@ class IngredientsAmount(models.Model):
     )
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
-        validators=[
+        validators=(
             MinValueValidator(0, 'Слишком маленькое количество!'),
-            ]
+        )
     )
 
     class Meta:
         ordering = ('-id',)
         verbose_name = 'Количество ингредиента'
         verbose_name_plural = 'Количество ингредиентов'
-        constraints = [
+        constraints = (
             models.UniqueConstraint(
-                fields=['ingredients', 'amount'],
-                name='unique_ingredient_amount',)
-        ]
+                fields=('ingredients', 'amount'),
+                name='unique_ingredient_amount',),
+        )
 
     def __str__(self):
         return (f'{self.ingredients.name} - {self.amount} '
@@ -128,10 +129,10 @@ class Favorite(models.Model):
     class Meta:
         verbose_name = 'Список избранного'
         verbose_name_plural = 'Списки избранного'
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'recipe'],
-                                    name='unique_favorite_recipe')
-        ]
+        constraints = (
+            models.UniqueConstraint(fields=('user', 'recipe'),
+                                    name='unique_favorite_recipe'),
+        )
 
     def __str__(self):
         return (f'Избранные рецепты пользователя {self.user}:'

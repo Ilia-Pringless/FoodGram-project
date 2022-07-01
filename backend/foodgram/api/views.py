@@ -3,16 +3,19 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework.backends import DjangoFilterBackend
-from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen import canvas
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
-from users.nested import ShortRecipeSerializer
 
 from foodgram.pagination import LimitPageNumberPagination
+from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 
 from .filters import IngredientNameFilter, RecipeFilter
+from .nested import ShortRecipeSerializer
 from .permissions import IsAdmin, IsAuthorOrAdminOrReadOnly
 from .serializers import (IngredientSerializer, RecipeGETSerializer,
                           RecipePOSTSerializer, TagSerializer)
@@ -37,9 +40,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     """Вьюсет для работы с рецептами"""
-
-    NAME = 'ingredients__ingredients__name'
-    MEASUREMENT_UNIT = 'ingredients__ingredients__measurement_unit'
 
     pagination_class = LimitPageNumberPagination
     queryset = Recipe.objects.all()
@@ -99,13 +99,50 @@ class RecipeViewSet(viewsets.ModelViewSet):
         favorite.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['POST', 'DELETE'],
-            permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=('post', 'delete',),
+            permission_classes=(IsAuthenticated))
     def favorite(self, request, pk=None):
         recipe = get_object_or_404(Recipe, pk=pk)
         if request.method == 'POST':
             return self.create_favorite(request, recipe)
         return self.delete_favorite(request, recipe)
+
+    def create_shopping_cart(self, request, recipe, shopping_cart):
+        """Добавление рецепта в список покупок"""
+        if shopping_cart.recipe.filter(pk__in=(recipe.pk,)).exists():
+            return Response('Рецепт уже в списке!',
+                            status=status.HTTP_400_BAD_REQUEST)
+        shopping_cart.recipe.add(recipe)
+        serializer = ShortRecipeSerializer(recipe)
+        return Response(serializer.data,
+                        status=status.HTTP_201_CREATED)
+
+    def delete_shopping_cart(self, request, recipe, shopping_cart):
+        """Удаление рецепта из списка покупок"""
+        if not shopping_cart.recipe.filter(pk__in=(recipe.pk,)).exists():
+            return Response('Нечего удалять',
+                            status=status.HTTP_400_BAD_REQUEST)
+        shopping_cart.recipe.remove(recipe)
+        return Response(
+            status=status.HTTP_204_NO_CONTENT,)
+
+    @action(detail=True, methods=('post', 'delete',),
+            permission_classes=(IsAuthenticated,))
+    def shopping_cart(self, request, pk=None):
+        recipe = get_object_or_404(Recipe, pk=pk)
+        shopping_cart = (
+            ShoppingCart.objects.get_or_create(user=request.user)[0])
+        if request.method == 'POST':
+            return self.create_shopping_cart(request, recipe, shopping_cart)
+        return self.delete_shopping_cart(request, recipe, shopping_cart)
+
+
+class ShoppingCartViewSet(viewsets.GenericViewSet):
+    NAME = 'ingredients__ingredients__name'
+    MEASUREMENT_UNIT = 'ingredients__ingredients__measurement_unit'
+    queryset = ShoppingCart.objects.all()
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ShortRecipeSerializer
 
     def create_shopping_cart_content(self, request):
         recipes = (
@@ -127,50 +164,24 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request):
         """Формирование списка покупок и его печать в файл"""
-
         try:
             ingredients = self.create_shopping_cart_content(request)
         except ShoppingCart.DoesNotExist:
-            return Response(
-                'Список покупок пуст!',
-                status=status.HTTP_400_BAD_REQUEST)
+            return Response('Список покупок пуст!',
+                            status=status.HTTP_400_BAD_REQUEST)
         shop_txt = self.create_ingredients_content(ingredients)
-
+        pdfmetrics.registerFont(
+            TTFont('Arial', 'arialbi.ttf', 'UTF-8'))
         response = HttpResponse(
-            shop_txt, content_type='text/plain; charset=utf-8')
-        filename = 'shopping_list.txt'
+            shop_txt, content_type='application/pdf')
+        filename = 'shopping_list.pdf'
         response['Content-Disposition'] = 'attachment; filename={0}'.format(
             filename)
+        page = canvas.Canvas(response)
+        page.setFont('Arial', size=24)
+        page.drawString(200, 800, 'Список покупок')
+        page.setFont('Arial', size=16)
+        page.drawString(100, 750, shop_txt)
+        page.showPage()
+        page.save()
         return response
-
-    def create_shopping_cart(self, request, recipe, shopping_cart):
-        """Добавление рецепта в список покупок"""
-        if shopping_cart.recipe.filter(pk__in=(recipe.pk,)).exists():
-            return Response('Рецепт уже в списке!',
-                            status=status.HTTP_400_BAD_REQUEST)
-        shopping_cart.recipe.add(recipe)
-        serializer = ShortRecipeSerializer(recipe)
-        return Response(serializer.data,
-                        status=status.HTTP_201_CREATED)
-
-    def delete_shopping_cart(self, request, recipe, shopping_cart):
-        """Удаление рецепта из списка покупок"""
-        if not shopping_cart.recipe.filter(pk__in=(recipe.pk,)).exists():
-            return Response('Нечего удалять',
-                            status=status.HTTP_400_BAD_REQUEST)
-        shopping_cart.recipe.remove(recipe)
-        return Response(
-            status=status.HTTP_204_NO_CONTENT,
-        )
-
-    @action(detail=True, methods=['POST', 'DELETE'],
-            permission_classes=[IsAuthenticated])
-    def shopping_cart(self, request, pk=None):
-        recipe = get_object_or_404(Recipe, pk=pk)
-        # recipe = self.get_object()
-        shopping_cart = (
-            ShoppingCart.objects.get_or_create(user=request.user)[0]
-        )
-        if request.method == 'POST':
-            return self.create_shopping_cart(request, recipe, shopping_cart)
-        return self.delete_shopping_cart(request, recipe, shopping_cart)

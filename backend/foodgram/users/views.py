@@ -8,7 +8,6 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from foodgram.pagination import LimitPageNumberPagination
-
 from .models import Follow, User
 from .serializers import SubscriptionSerializer, TokenCreateSerializer
 

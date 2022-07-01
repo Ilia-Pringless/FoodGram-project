@@ -17,13 +17,12 @@ class User(AbstractUser):
         return self.is_superuser or self.is_staff
 
     class Meta:
-        ordering = ['id']
-        constraints = [
+        ordering = ('id',)
+        constraints = (
             models.UniqueConstraint(
-                fields=['email', 'username'],
-                name='unique_auth'
-            )
-        ]
+                fields=('email', 'username'),
+                name='unique_auth'),
+        )
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
@@ -48,11 +47,11 @@ class Follow(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-        constraints = [
+        constraints = (
             models.UniqueConstraint(
                 fields=('user', 'author'),
-                name='unique_following')
-        ]
+                name='unique_following'),
+        )
 
     def __str__(self):
         return (

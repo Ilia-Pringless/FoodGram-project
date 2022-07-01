@@ -6,13 +6,13 @@ from .views import CustomUsersViewSet, TokenView
 
 app_name = 'users'
 
-router = DefaultRouter()
+router_v1 = DefaultRouter()
 
-router.register('users', CustomUsersViewSet, basename='users')
+router_v1.register('users', CustomUsersViewSet, basename='users')
 
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('', include(router_v1.urls)),
     path('auth/token/login/', TokenView.as_view(), name='signup'),
     path('auth/token/logout/', TokenDestroyView.as_view(), name='signout'),
 ]
