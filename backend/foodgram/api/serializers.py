@@ -41,7 +41,7 @@ class RecipeIngredientPOSTSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'id': {'read_only': False,
                    'error_messages': {
-                        'does_not_exist': 'Ингредиента не существует!'}},
+                       'does_not_exist': 'Ингредиента не существует!'}},
             'amount': {'error_messages': {
                        'min_value': 'Слишком малое количество ингредиента!'}}
         }
@@ -86,8 +86,8 @@ class RecipePOSTSerializer(serializers.ModelSerializer):
 
     ingredients = RecipeIngredientPOSTSerializer(many=True)
     tags = serializers.ListField(child=serializers.SlugRelatedField(
-                                    slug_field='id',
-                                    queryset=Tag.objects.all()))
+        slug_field='id',
+        queryset=Tag.objects.all()))
     image = Base64ImageField()
 
     class Meta:
@@ -118,7 +118,7 @@ class RecipePOSTSerializer(serializers.ModelSerializer):
             id_ingredients.append(ingredient['id'])
         if len(id_ingredients) > len(set(id_ingredients)):
             raise serializers.ValidationError(
-                    'Ингредиенты в рецепте не могут повторяться!')
+                'Ингредиенты в рецепте не могут повторяться!')
 
         if attrs['cooking_time'] == 0:
             raise serializers.ValidationError(
