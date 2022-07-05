@@ -101,7 +101,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=('post', 'delete',),
-            permission_classes=(IsAuthenticated))
+            permission_classes=(IsAuthenticated,))
     def favorite(self, request, pk=None):
         recipe = get_object_or_404(Recipe, pk=pk)
         if request.method == 'POST':

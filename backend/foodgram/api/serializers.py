@@ -1,11 +1,9 @@
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import (Favorite, Ingredient, IngredientsAmount, Recipe,
                             ShoppingCart, Tag)
-from users.models import User
 from users.serializers import UserViewSerializer
 
 
@@ -160,24 +158,3 @@ class RecipePOSTSerializer(serializers.ModelSerializer):
         instance.tags.clear()
         instance = self.add_ingredients_tags_fields(instance, validated_data)
         return super().update(instance, validated_data)
-
-
-class FavoriteSerializer(serializers.ModelSerializer):
-    """Сериализатор списка избранного"""
-    recipe = serializers.PrimaryKeyRelatedField(
-        queryset=Recipe.objects.all()
-    )
-    user = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all()
-    )
-
-    class Meta:
-        model = Favorite
-        fields = ('id', 'recipe', 'user')
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Favorite.objects.all(),
-                fields=('user', 'recipe'),
-                message='Рецепт уже есть в избранных!',
-            )
-        ]
