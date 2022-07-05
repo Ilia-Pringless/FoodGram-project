@@ -43,8 +43,12 @@ class CustomUsersViewSet(UserViewSet):
 
     @action(detail=False, methods=('get',))
     def subscriptions(self, request):
-        """Просмотр подписок"""
+        self.get_serializer
         queryset = User.objects.filter(following__user=request.user)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_subscribtion_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
         serializer = self.get_subscribtion_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
