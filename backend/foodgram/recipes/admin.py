@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.db.models import Count, Sum
 
 from foodgram.settings import EMPTY_VALUE_DISPLAY
-from .models import Ingredient, IngredientsAmount, Recipe, ShoppingCart, Tag
+from .models import (Ingredient, IngredientsAmount, Recipe,
+                     ShoppingCart, Tag, Favorite)
 
 
 @admin.register(Tag)
@@ -56,3 +57,10 @@ class ShoppingCartAdmin(admin.ModelAdmin):
         return (
             obj.recipe.all().annotate(count_ingredients=Count('ingredients'))
             .aggregate(total=Sum('count_ingredients'))['total'])
+
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ('user', 'recipe',)
+    list_filter = ('user', 'recipe',)
+    empty_value_display = EMPTY_VALUE_DISPLAY
