@@ -45,7 +45,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
-        # stack_file_name: docker-compose.yaml
+        stack_file_name: docker-compose.yaml
         script: |
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/backend:latest
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
@@ -61,4 +61,4 @@ jobs:
           echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
           echo DB_HOST=${{ secrets.DB_HOST }} >> .env
           echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-          sudo docker compose up -d --build
+          sudo docker-compose up -d --build
