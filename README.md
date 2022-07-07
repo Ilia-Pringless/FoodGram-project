@@ -1,6 +1,6 @@
 # FoodGram project
 
-![workflow](https://github.com/Ilia-Pringless/foodgram-project-react/actions/workflows/main.yml/badge.svg)
+![FoodGram Workflow](https://github.com/Ilia-Pringless/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 
 Cервис для публикаций и обмена рецептами.
 
