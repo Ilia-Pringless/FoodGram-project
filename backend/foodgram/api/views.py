@@ -158,7 +158,7 @@ class ShoppingCartViewSet(viewsets.GenericViewSet):
         for ingredient in ingredients:
             content += (f'{ingredient[self.NAME]}'
                         f' ({ingredient[self.MEASUREMENT_UNIT]})'
-                        f' — {ingredient["total"]}, ')
+                        f' — {ingredient["total"]},\n')
         return content
 
     @action(detail=False, methods=['GET'],
@@ -184,7 +184,7 @@ class ShoppingCartViewSet(viewsets.GenericViewSet):
         page.setFont('Arial', size=16)
         new_form = shop_txt.split(', ')
         height = 750
-        for i in new_form:
+        for i in shop_txt:
             page.drawString(100, height, i)
             height -= 50
         page.showPage()
