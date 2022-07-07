@@ -1,19 +1,28 @@
-# praktikum_new_diplom
+# FoodGram project
 
 ![workflow](https://github.com/Ilia-Pringless/yamdb_final/actions/workflows/yamdb_workflow.yml/badge.svg)
 
+Cервис для публикаций и обмена рецептами.
+
+Авторизованным пользователям доступны функции создания рецепта, добавление понравившихся рецептов в избраннное, добавление рецептов в список покупок. В список покупок записываются необходимые ингредиенты для приготовления, есть возможность скачать список продуктов в формате PDF. Авторизованным пользователям доступна подписка на других авторов. 
+Неавторизованным пользователям доступна регистрация, авторизация, просмотр рецептов других пользователей.
+
+- Сервис расположен по адресу: 
+```
+http://158.160.1.73/
+```
+
 - Страница администрирования
 ```
-130.193.54.148/admin/
+158.160.1.73/admin/
 ```
-- Страница просмотра документации о проекте
-```
-130.193.54.148/redoc/
-```
+- Авторизация Django
+> login:
+>> ```ilia-admin```
 
-В данном проекте реализованно api сервиса YaMDb.
+> password:
+>> ```my-best-pass```
 
-Проект YaMDb собирает отзывы (Review) пользователей на произведения (Titles). Произведения делятся на категории: «Книги», «Фильмы», «Музыка». Список категорий (Category) может быть расширен администратором (например, можно добавить категорию «Изобразительное искусство» или «Ювелирка»). Также имеется возможность оставлять комментарии (Comments) к отзывам.
 
 ## Шаблон заполнения env-файла
 
@@ -53,34 +62,83 @@ python3 api_yamdb/manage.py runserver
 ```docker-compose up -d --build ```
 
 ## Примеры запросов и ответов от api:
-### Добавление нового отзыва. 
+### Добавление нового рецепта. 
 
-POST NAME_OF_YOUR_DOMAIN/api/v1/titles/{title_id}/reviews/
+*POST* ```158.160.1.73/api/recipes/```
 ```
 {
+  "ingredients": [
+    {
+      "id": 1123,
+      "amount": 10
+    }
+  ],
+  "tags": [
+    1,
+    2
+  ],
+  "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg==",
+  "name": "string",
   "text": "string",
-  "score": 1
+  "cooking_time": 1
 }
 ```
-Ответ
+*Ответ*
 
 ```
 {
   "id": 0,
+  "tags": [
+    {
+      "id": 0,
+      "name": "Завтрак",
+      "color": "#E26C2D",
+      "slug": "breakfast"
+    }
+  ],
+  "author": {
+    "email": "user@example.com",
+    "id": 0,
+    "username": "string",
+    "first_name": "Ваня",
+    "last_name": "Иванов",
+    "is_subscribed": false
+  },
+  "ingredients": [
+    {
+      "id": 0,
+      "name": "Картофель отварной",
+      "measurement_unit": "г",
+      "amount": 1
+    } 
+  ],
+  "is_favorited": true,
+  "is_in_shopping_cart": true,
+  "name": "string",
+  "image": "http://foodgram.example.org/media/recipes/images/image.jpeg",
   "text": "string",
-  "author": "string",
-  "score": 1,
-  "pub_date": "2019-08-24T14:15:22Z"
+  "cooking_time": 1
 }
 ```
-### Получение комментария comment_id к отзыву title_id
+### Подписка на пользователя {id}
 
-GET  NAME_OF_YOUR_DOMAIN/api/v1/titles/{title_id}/reviews/{review_id}/comments/{comment_id}
+*POST*  ```158.160.1.73/api/users/{id}/subscribe/```
 ```
 {
+  "email": "user@example.com",
   "id": 0,
-  "text": "string",
-  "author": "string",
-  "pub_date": "2019-08-24T14:15:22Z"
+  "username": "string",
+  "first_name": "Вася",
+  "last_name": "Пупкин",
+  "is_subscribed": true,
+  "recipes": [
+    {
+      "id": 0,
+      "name": "string",
+      "image": "http://foodgram.example.org/media/recipes/images/image.jpeg",
+      "cooking_time": 1
+    }
+  ],
+  "recipes_count": 0
 }
 ```
