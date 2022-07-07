@@ -123,6 +123,7 @@ python3 api_yamdb/manage.py runserver
 ### Подписка на пользователя {id}
 
 *POST*  ```158.160.1.73/api/users/{id}/subscribe/```
+*Ответ*
 ```
 {
   "email": "user@example.com",
