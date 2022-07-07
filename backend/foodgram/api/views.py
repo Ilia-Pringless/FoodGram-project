@@ -155,11 +155,6 @@ class ShoppingCartViewSet(viewsets.GenericViewSet):
 
     def create_ingredients_content(self, ingredients):
         content = {}
-        for ingredient in ingredients:
-            content += (f'{ingredient[self.NAME]}'
-                        f' ({ingredient[self.MEASUREMENT_UNIT]})'
-                        f' — {ingredient["total"]},\n')
-
         for item in ingredients:
             name = item[0]
             content[name] = {
