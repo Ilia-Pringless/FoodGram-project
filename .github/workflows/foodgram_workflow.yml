@@ -45,11 +45,9 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/backend:latest
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
           sudo docker-compose stop
-          sudo docker-compose rm ilia-admin_backend_1
-          sudo docker-compose rm ilia-admin_frontend_1
+          sudo docker-compose rm backend
+          sudo docker-compose rm frontend
           sudo touch .env
           echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
           echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
