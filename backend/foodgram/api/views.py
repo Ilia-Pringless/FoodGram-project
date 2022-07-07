@@ -182,7 +182,10 @@ class ShoppingCartViewSet(viewsets.GenericViewSet):
         page.setFont('Arial', size=24)
         page.drawString(200, 800, 'Список покупок')
         page.setFont('Arial', size=16)
-        page.drawString(100, 750, shop_txt)
+        height = 750
+        for i in shop_txt.split():
+            page.drawString(100, height, i)
+            height -= 50
         page.showPage()
         page.save()
         return response

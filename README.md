@@ -1,6 +1,6 @@
 # FoodGram project
 
-![workflow](https://github.com/Ilia-Pringless/foodgram-project-react/actions/workflows/main.yml/badge.svg)
+![Foodgram Workflow](https://github.com/Ilia-Pringless/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 
 Cервис для публикаций и обмена рецептами.
 
@@ -23,6 +23,12 @@ http://158.160.1.73/
 > password:
 >> ```my-best-pass```
 
+- Тестовый пользователь:
+> mail:
+>> ```backend@yandex.ru```
+
+> password:
+>> ```my-best-pass```
 
 ## Шаблон заполнения env-файла
 
@@ -52,7 +58,7 @@ pip install -r requirements.txt
 ``` 
 - И выполните команду:
 ```
-python3 api_yamdb/manage.py runserver
+python3 backend/foodgram/manage.py runserver
 ```
 
 ## Запуск приложения в контейнерах
@@ -123,7 +129,8 @@ python3 api_yamdb/manage.py runserver
 ### Подписка на пользователя {id}
 
 *POST*  ```158.160.1.73/api/users/{id}/subscribe/```
-*Ответ*
+
+*Ответ:*
 ```
 {
   "email": "user@example.com",
@@ -143,3 +150,6 @@ python3 api_yamdb/manage.py runserver
   "recipes_count": 0
 }
 ```
+
+## Стек технологий
+Python 3.7.9, Django 3.2.13, Django REST Framework 3.13.1, PostgresQL, Docker, Yandex.Cloud.
