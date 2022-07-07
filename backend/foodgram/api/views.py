@@ -156,10 +156,11 @@ class ShoppingCartViewSet(viewsets.GenericViewSet):
     def create_ingredients_content(self, ingredients):
         content = {}
         for item in ingredients:
-            name = item[0]
+            print(item)
+            name = item[self.NAME]
             content[name] = {
-                'measurement_unit': item[1],
-                'amount': item[2]
+                'measurement_unit': item[self.MEASUREMENT_UNIT],
+                'amount': item['total']
             }
         return content
 
@@ -186,7 +187,7 @@ class ShoppingCartViewSet(viewsets.GenericViewSet):
         page.setFont('Arial', size=16)
         height = 750
         for i, (name, data) in enumerate(shop_txt.items(), 1):
-            page.drawString(75, height, (f'<{i}> {name} - {data["amount"]}, '
+            page.drawString(75, height, (f'{i}. {name} - {data["amount"]} '
                                          f'{data["measurement_unit"]}'))
             height -= 25
         page.showPage()
