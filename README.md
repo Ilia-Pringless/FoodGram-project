@@ -1,6 +1,6 @@
 # FoodGram project
 
-![Foodgram Workflow](https://github.com/Ilia-Pringless/foodgram-project-react/actions/workflows/main.yml/badge.svg)
+![Foodgram Workflow](https://github.com/Ilia-Pringless/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
 
 Cервис для публикаций и обмена рецептами.
 
@@ -16,7 +16,7 @@ http://158.160.1.73/
 ```
 158.160.1.73/admin/
 ```
-- Авторизация Django
+- Авторизация Django:
 > login:
 >> ```ilia-admin```
 
@@ -89,7 +89,7 @@ python3 backend/foodgram/manage.py runserver
   "cooking_time": 1
 }
 ```
-*Ответ*
+*Ответ:*
 
 ```
 {
