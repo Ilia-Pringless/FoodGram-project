@@ -182,7 +182,7 @@ class ShoppingCartViewSet(viewsets.GenericViewSet):
             filename)
         page = canvas.Canvas(response)
         page.setFont('Arial', size=24)
-        page.drawString(200, 800, 'Список покупок')
+        page.drawString(200, 800, 'Список покупокc')
         page.setFont('Arial', size=16)
         height = 750
         for i, (name, data) in enumerate(shop_txt.items(), 1):
