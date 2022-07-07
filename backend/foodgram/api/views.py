@@ -154,11 +154,18 @@ class ShoppingCartViewSet(viewsets.GenericViewSet):
                 .annotate(total=Sum('ingredients__amount')))
 
     def create_ingredients_content(self, ingredients):
-        content = ''
+        content = {}
         for ingredient in ingredients:
             content += (f'{ingredient[self.NAME]}'
                         f' ({ingredient[self.MEASUREMENT_UNIT]})'
                         f' — {ingredient["total"]},\n')
+
+        for item in ingredients:
+            name = item[0]
+            content[name] = {
+                'measurement_unit': item[1],
+                'amount': item[2]
+            }
         return content
 
     @action(detail=False, methods=['GET'],
@@ -182,11 +189,11 @@ class ShoppingCartViewSet(viewsets.GenericViewSet):
         page.setFont('Arial', size=24)
         page.drawString(200, 800, 'Список покупок')
         page.setFont('Arial', size=16)
-        new_form = shop_txt.split(', ')
         height = 750
-        for i in shop_txt:
-            page.drawString(100, height, i)
-            height -= 50
+        for i, (name, data) in enumerate(shop_txt.items(), 1):
+            page.drawString(75, height, (f'<{i}> {name} - {data["amount"]}, '
+                                         f'{data["measurement_unit"]}'))
+            height -= 25
         page.showPage()
         page.save()
         return response
