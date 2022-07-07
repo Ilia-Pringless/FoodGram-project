@@ -182,8 +182,9 @@ class ShoppingCartViewSet(viewsets.GenericViewSet):
         page.setFont('Arial', size=24)
         page.drawString(200, 800, 'Список покупок')
         page.setFont('Arial', size=16)
+        new_form = shop_txt.split()
         height = 750
-        for i in shop_txt.split():
+        for i in new_form:
             page.drawString(100, height, i)
             height -= 50
         page.showPage()
