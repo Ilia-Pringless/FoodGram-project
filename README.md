@@ -16,20 +16,6 @@ http://158.160.1.73/
 ```
 158.160.1.73/admin/
 ```
-- Авторизация Django:
-> login:
->> ```ilia-admin```
-
-> password:
->> ```my-best-pass```
-
-- Тестовый пользователь:
-> mail:
->> ```backend@yandex.ru```
-
-> password:
->> ```my-best-pass```
-
 ## Шаблон заполнения env-файла
 
 - DJANGO_KEY= _здесь указать секретный ключ_
